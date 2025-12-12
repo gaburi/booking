@@ -1,0 +1,190 @@
+// Session Booking Platform - Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User Role
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("ADMIN") // UserRole
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// Locations for presencial sessions
+model Location {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  city        String
+  country     String
+  postalCode  String?
+  capacity    Int      @default(1)
+  lat         Float?
+  lng         Float?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  slots       AvailabilitySlot[]
+
+  @@map("locations")
+}
+
+// Availability Slots (pre-created by admin)
+// Availability Slots (pre-created by admin)
+model AvailabilitySlot {
+  id           String           @id @default(cuid())
+  locationId   String?
+  date         DateTime
+  time         String
+  duration     Int              // minutes
+  type         String           // SessionType (PRESENCIAL or ONLINE)
+  sessionFormat String          @default("INDIVIDUAL") // SessionFormat (GROUP or INDIVIDUAL)
+  status       String           @default("AVAILABLE") // SlotStatus
+  price        Int?             // Optional price override in cents
+  maxCapacity  Int              @default(1)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  location     Location?        @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+
+  @@unique([locationId, date, time, type])
+  @@index([date, status, type])
+  @@map("availability_slots")
+}
+
+// Bookings
+model Booking {
+  id                String            @id @default(cuid())
+  slotId            String
+  firstName         String
+  lastName          String
+  email             String
+  phone             String
+  language          String            @default("pt")
+  notes             String?
+  type              String            // SessionType
+  status            String            @default("PENDING_PAYMENT") // BookingStatus
+  totalAmount       Int               // in cents
+  currency          String            @default("EUR")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  cancelledAt        DateTime?
+  cancellationReason String?
+  rescheduledFrom    String?
+  rating             Int?
+  reviewText         String?
+  reviewedAt         DateTime?
+  reminderSentAt     DateTime?
+  couponCode         String?
+  discountAmount     Int?     @default(0)
+  finalAmount        Int?
+
+  slot              AvailabilitySlot? @relation(fields: [slotId], references: [id])
+  payment           Payment?
+  googleMeetEvent   GoogleMeetEvent?
+
+  @@index([email])
+  @@index([status])
+  @@map("bookings")
+}
+
+// Payments
+model Payment {
+  id                  String        @id @default(cuid())
+  bookingId           String        @unique
+  stripePaymentIntent String        @unique
+  amount              Int           // in cents
+  currency            String        @default("EUR")
+  status              String        @default("PENDING") // PaymentStatus
+  paymentMethod       String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  refundedAt    DateTime?
+  refundAmount  Int?
+  refundReason  String?
+
+  booking             Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([stripePaymentIntent])
+  @@map("payments")
+}
+
+// Google Meet Events
+model GoogleMeetEvent {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  googleEventId   String   @unique
+  meetLink        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("google_meet_events")
+}
+
+model Coupon {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  discountType  String   // PERCENTAGE or FIXED
+  discountValue Int      // 0-100 or cents
+  isActive      Boolean  @default(true)
+  maxUses       Int?
+  usedCount     Int      @default(0)
+  validFrom     DateTime @default(now())
+  validUntil    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("coupons")
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventType String
+  eventData String? // Using String for SQLite compatibility (Json is better for Postgres but String is safer across DBs if Prisma version varies or for simplicity)
+  sessionId String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@map("analytics_events")
+}
+
+// System Settings (dynamic configuration)
+model SystemSettings {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+// Email Templates
+model EmailTemplate {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., 'BOOKING_CONFIRMATION', 'BOOKING_CANCELLATION'
+  subject     String
+  htmlContent String
+  textContent String?
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+
+  @@map("email_templates")
+}

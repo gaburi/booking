@@ -1,0 +1,22 @@
+{
+  "app_name": "Brilliance - Réservation de Sessions",
+  "language": "Langue",
+  "home": "Accueil",
+  "booking": "Réservation",
+  "admin": "Admin",
+  "login": "Connexion",
+  "logout": "Déconnexion",
+  "welcome": "Bienvenue",
+  "loading": "Chargement...",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "close": "Fermer",
+  "submit": "Soumettre",
+  "back": "Retour",
+  "next": "Suivant",
+  "confirm": "Confirmer",
+  "error": "Erreur",
+  "success": "Succès"
+}

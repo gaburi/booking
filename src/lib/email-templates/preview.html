@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview Templates - Brilliance</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #1f2937;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tab-button {
+      background-color: #374151;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .tab-button:hover {
+      background-color: #4b5563;
+    }
+    .tab-button.active {
+      background-color: #8b5cf6;
+    }
+    .preview-frame {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+    .preview-frame.active {
+      display: block;
+    }
+    iframe {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      min-height: 800px;
+    }
+    .info {
+      background-color: #374151;
+      color: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .info a {
+      color: #a78bfa;
+      text-decoration: none;
+    }
+    .info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📧 Preview dos Templates de Email - Brilliance</h1>
+
+    <div class="tabs">
+      <button class="tab-button active" onclick="showPreview('booking-confirmation')">
+        Confirmação de Agendamento
+      </button>
+      <button class="tab-button" onclick="showPreview('session-reminder')">
+        Lembrete de Sessão
+      </button>
+      <button class="tab-button" onclick="showPreview('cancellation')">
+        Cancelamento
+      </button>
+      <button class="tab-button" onclick="showPreview('payment')">
+        Pagamento
+      </button>
+      <button class="tab-button" onclick="showPreview('password-reset')">
+        Reset de Senha
+      </button>
+      <button class="tab-button" onclick="showPreview('welcome')">
+        Boas-vindas
+      </button>
+      <button class="tab-button" onclick="showPreview('admin-notification')">
+        Notificação Admin
+      </button>
+    </div>
+
+    <!-- Booking Confirmation -->
+    <div id="booking-confirmation" class="preview-frame active">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <!-- Session Reminder -->
+    <div id="session-reminder" class="preview-frame">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <!-- Cancellation -->
+    <div id="cancellation" class="preview-frame">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <!-- Payment -->
+    <div id="payment" class="preview-frame">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <!-- Password Reset -->
+    <div id="password-reset" class="preview-frame">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <!-- Welcome -->
+    <div id="welcome" class="preview-frame">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <!-- Admin Notification -->
+    <div id="admin-notification" class="preview-frame">
+      <iframe srcdoc=""></iframe>
+    </div>
+
+    <div class="info">
+      <p>
+        💡 <strong>Como usar:</strong> Importe os templates no seu código TypeScript/JavaScript.
+        <br>
+        Veja exemplos em <a href="#">usage-examples.ts</a> e documentação em <a href="#">README.md</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function showPreview(id) {
+      // Hide all previews
+      document.querySelectorAll('.preview-frame').forEach(frame => {
+        frame.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+
+      // Show selected preview
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Sample data para os templates
+    const templates = {
+      'booking-confirmation': `
+        <!-- Copie o HTML gerado pela função getBookingConfirmationEmail aqui -->
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Confirmação de Agendamento</h2>
+          <p>Para visualizar, execute a função:</p>
+          <code style="background: #f3f4f6; padding: 20px; display: block; margin: 20px 0; border-radius: 8px; text-align: left;">
+            import { getBookingConfirmationEmail } from '@/lib/email-templates';<br><br>
+            const html = getBookingConfirmationEmail({<br>
+            &nbsp;&nbsp;clientName: 'João Silva',<br>
+            &nbsp;&nbsp;sessionType: 'PRESENCIAL',<br>
+            &nbsp;&nbsp;date: '15 de Dezembro de 2025',<br>
+            &nbsp;&nbsp;time: '14:00',<br>
+            &nbsp;&nbsp;duration: 60,<br>
+            &nbsp;&nbsp;location: 'Clínica Centro',<br>
+            &nbsp;&nbsp;bookingReference: 'BRL-2025-001',<br>
+            &nbsp;&nbsp;cancelUrl: 'https://...',<br>
+            });<br><br>
+            console.log(html);
+          </code>
+          <p>Cole o resultado HTML no iframe deste preview.</p>
+        </div>
+      `,
+      'session-reminder': `
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Lembrete de Sessão</h2>
+          <p>Execute getSessionReminderEmail() para gerar o HTML</p>
+        </div>
+      `,
+      'cancellation': `
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Cancelamento</h2>
+          <p>Execute getBookingCancellationEmail() para gerar o HTML</p>
+        </div>
+      `,
+      'payment': `
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Confirmação de Pagamento</h2>
+          <p>Execute getPaymentConfirmationEmail() para gerar o HTML</p>
+        </div>
+      `,
+      'password-reset': `
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Reset de Senha</h2>
+          <p>Execute getAdminPasswordResetEmail() para gerar o HTML</p>
+        </div>
+      `,
+      'welcome': `
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Boas-vindas</h2>
+          <p>Execute getWelcomeEmail() para gerar o HTML</p>
+        </div>
+      `,
+      'admin-notification': `
+        <div style="padding: 40px; font-family: sans-serif; text-align: center;">
+          <h2>Template: Notificação Admin</h2>
+          <p>Execute getAdminNotificationEmail() para gerar o HTML</p>
+        </div>
+      `
+    };
+
+    // Load templates into iframes
+    Object.keys(templates).forEach(key => {
+      const iframe = document.querySelector(`#${key} iframe`);
+      if (iframe) {
+        iframe.srcdoc = templates[key];
+      }
+    });
+  </script>
+</body>
+</html>
